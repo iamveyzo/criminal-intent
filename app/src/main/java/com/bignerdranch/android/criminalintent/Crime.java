@@ -31,4 +31,20 @@ public class Crime {
     public void setTitle(String title) {
         mTitle = title;
     }
+
+    public Date getDate() {
+        return mDate;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
+    }
+
+    public boolean isSolved() {
+        return mSolved;
+    }
+
+    public void setSolved(boolean solved) {
+        mSolved = solved;
+    }
 }
