@@ -45,7 +45,7 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
         }
 
@@ -111,6 +111,10 @@ public class CrimeListFragment extends Fragment {
         public int getItemCount() {
             return mCrimes.size();
         }
+
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
+        }
     }
 
     @Override
@@ -123,10 +127,11 @@ public class CrimeListFragment extends Fragment {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -145,7 +150,7 @@ public class CrimeListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_crime_list, menu);
 
         MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
-        if(mSubtitleVisible) {
+        if (mSubtitleVisible) {
             subtitleItem.setTitle(R.string.hide_subtitle);
         } else {
             subtitleItem.setTitle(R.string.show_subtitle);
@@ -154,7 +159,7 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
@@ -176,7 +181,7 @@ public class CrimeListFragment extends Fragment {
         int crimeCount = crimeLab.getCrimes().size();
         String subtitle = getString(R.string.subtitle_format, crimeCount);
 
-        if(!mSubtitleVisible) {
+        if (!mSubtitleVisible) {
             subtitle = null;
         }
 
