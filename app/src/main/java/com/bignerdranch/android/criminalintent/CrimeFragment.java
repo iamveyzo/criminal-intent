@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -147,7 +148,7 @@ public class CrimeFragment extends Fragment {
         }
 
         PackageManager packageManager = getActivity().getPackageManager();
-        if(packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null)  {
+        if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
             mSuspectButton.setEnabled(false);
         }
 
@@ -157,7 +158,7 @@ public class CrimeFragment extends Fragment {
         boolean canTakePhoto = mPhotoFile != null && captureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
-        if(canTakePhoto) {
+        if (canTakePhoto) {
             Uri uri = Uri.fromFile(mPhotoFile);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         }
@@ -170,6 +171,7 @@ public class CrimeFragment extends Fragment {
         });
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        updatePhotoView();
 
         return v;
     }
@@ -197,7 +199,7 @@ public class CrimeFragment extends Fragment {
 
             try {
                 //Double-check that you actually got results
-                if(c.getCount() == 0) {
+                if (c.getCount() == 0) {
                     return;
                 }
 
@@ -210,6 +212,8 @@ public class CrimeFragment extends Fragment {
             } finally {
                 c.close();
             }
+        } else if(requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
         }
     }
 
@@ -238,4 +242,14 @@ public class CrimeFragment extends Fragment {
         String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
         return report;
     }
+
+    private void updatePhotoView() {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
+    }
+
 }
